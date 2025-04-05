@@ -38,9 +38,9 @@ import com.zrifapps.game.presentation.viewmodels.list.GameListViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameListScreen(
-    onGameClicked: (Game) -> Unit,
+    onGameClicked: (String) -> Unit,
     onFavoritesClicked: () -> Unit,
-    viewModel: GameListViewModel = hiltViewModel()
+    viewModel: GameListViewModel = hiltViewModel(),
 ) {
     val games = viewModel.games.collectAsLazyPagingItems()
     var searchQuery by remember { mutableStateOf("") }
@@ -84,7 +84,7 @@ fun GameListScreen(
 @Composable
 fun GameList(
     games: LazyPagingItems<Game>,
-    onGameClicked: (Game) -> Unit
+    onGameClicked: (String) -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Show loading for initial load
@@ -117,7 +117,7 @@ fun GameList(
                     if (game != null) {
                         GameListTile(
                             game = game,
-                            onClick = { onGameClicked(game) }
+                            onClick = { onGameClicked(game.id.toString()) }
                         )
                     }
                 }

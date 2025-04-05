@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.zrifapps.game.presentation.screens.GameListScreen
+import com.zrifapps.game.presentation.screens.detail.GameDetailScreen
 
 
 @Composable
@@ -15,7 +16,6 @@ fun AppRouter(
     modifier: Modifier = Modifier,
     startDestination: AppRoute,
 ) {
-
     fun navigateTo(route: AppRoute, clearBackStack: Boolean = false) {
         navController.navigate(route) {
             if (clearBackStack) {
@@ -23,15 +23,29 @@ fun AppRouter(
             }
         }
     }
+
     NavHost(
-        navController = navController, startDestination = startDestination, modifier = modifier
+        navController = navController,
+        startDestination = startDestination,
+        modifier = modifier
     ) {
         composable<GameList> {
             GameListScreen(
-                onGameClicked = { },
-                onFavoritesClicked = {}
+                onGameClicked = { gameId ->
+                    navigateTo(GameDetail(gameId))
+                },
+                onFavoritesClicked = {
+                    navigateTo(FavoriteGames)
+                }
             )
         }
 
+        composable<GameDetail> { backStackEntry ->
+            val gameId = backStackEntry.arguments?.getString("gameId") ?: return@composable
+            GameDetailScreen(
+                gameId = gameId,
+                onBackPressed = { navController.popBackStack() }
+            )
+        }
     }
 }
