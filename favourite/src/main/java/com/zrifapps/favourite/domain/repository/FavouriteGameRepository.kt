@@ -1,9 +1,10 @@
 package com.zrifapps.favourite.domain.repository
 
 import com.zrifapps.favourite.domain.entity.FavouriteGame
+import kotlinx.coroutines.flow.Flow
 
 interface FavouriteGameRepository {
-    suspend fun getAll(): List<FavouriteGame>
+    fun getAll(): Flow<List<FavouriteGame>>
 
     suspend fun isFavourite(gameId: Int): Boolean
 

@@ -72,12 +72,10 @@ fun GameDetailScreen(
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Load game details when the screen is first composed
     LaunchedEffect(gameId) {
         viewModel.loadGameDetail(gameId)
     }
 
-    // Show error message if any
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
             snackbarHostState.showSnackbar(message = it)
@@ -133,7 +131,6 @@ fun GameDetailContent(game: Game) {
             .fillMaxSize()
             .verticalScroll(scrollState)
     ) {
-        // Game Hero Image
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -147,7 +144,6 @@ fun GameDetailContent(game: Game) {
                 modifier = Modifier.fillMaxSize()
             )
 
-            // Rating badge
             Surface(
                 shape = RoundedCornerShape(24.dp),
                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.9f),
@@ -184,11 +180,9 @@ fun GameDetailContent(game: Game) {
 
         }
 
-        // Game Details
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            // Title and Release Date
             Text(
                 text = game.name,
                 style = MaterialTheme.typography.headlineMedium,
@@ -205,7 +199,6 @@ fun GameDetailContent(game: Game) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Platforms
             game.platforms?.let { platforms ->
                 Text(
                     text = "Available on:",
@@ -227,7 +220,6 @@ fun GameDetailContent(game: Game) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // Genres
             game.genres?.let { genres ->
                 Text(
                     text = "Genres:",
@@ -249,7 +241,6 @@ fun GameDetailContent(game: Game) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // Ratings breakdown
             game.ratings?.let { ratings ->
                 Text(
                     text = "Rating Breakdown:",
@@ -270,7 +261,6 @@ fun GameDetailContent(game: Game) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // Stores
             game.stores?.let { stores ->
                 Text(
                     text = "Available at:",

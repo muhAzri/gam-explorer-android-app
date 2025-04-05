@@ -87,65 +87,64 @@ fun GameList(
     onGameClicked: (String) -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        // Show loading for initial load
-        if (games.loadState.refresh is LoadState.Loading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-        // Show error for initial load
-        else if (games.loadState.refresh is LoadState.Error) {
-            val error = (games.loadState.refresh as LoadState.Error).error
-            Text(
-                text = "Error: ${error.localizedMessage}",
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-        // Show content when data is available
-        else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(
-                    count = games.itemCount,
-                    key = games.itemKey { game -> game.id }
-                ) { index ->
-                    val game = games[index]
-                    if (game != null) {
-                        GameListTile(
-                            game = game,
-                            onClick = { onGameClicked(game.id.toString()) }
-                        )
-                    }
-                }
+        when (games.loadState.refresh) {
+            is LoadState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
 
-                // Show loading for append (pagination)
-                if (games.loadState.append is LoadState.Loading) {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(8.dp)
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.Center)
+            is LoadState.Error -> {
+                val error = (games.loadState.refresh as LoadState.Error).error
+                Text(
+                    text = "Error: ${error.localizedMessage}",
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(
+                        count = games.itemCount,
+                        key = games.itemKey { game -> game.id }
+                    ) { index ->
+                        val game = games[index]
+                        if (game != null) {
+                            GameListTile(
+                                game = game,
+                                onClick = { onGameClicked(game.id.toString()) }
                             )
                         }
                     }
-                }
 
-                // Show error for append (pagination)
-                if (games.loadState.append is LoadState.Error) {
-                    item {
-                        val error = (games.loadState.append as LoadState.Error).error
-                        Text(
-                            text = "Error: ${error.localizedMessage}",
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.padding(16.dp)
-                        )
+                    if (games.loadState.append is LoadState.Loading) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(8.dp)
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                            }
+                        }
+                    }
+
+                    if (games.loadState.append is LoadState.Error) {
+                        item {
+                            val error = (games.loadState.append as LoadState.Error).error
+                            Text(
+                                text = "Error: ${error.localizedMessage}",
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
                     }
                 }
             }

@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.zrifapps.favourite.domain.entity.FavouriteGame
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavouriteGameDao {
@@ -18,7 +19,7 @@ interface FavouriteGameDao {
     suspend fun delete(game: FavouriteGame)
 
     @Query("SELECT * FROM favourite_games")
-    suspend fun getAll(): List<FavouriteGame>
+    fun getAll(): Flow<List<FavouriteGame>>
 
     @Query("SELECT EXISTS(SELECT 1 FROM favourite_games WHERE id = :id)")
     suspend fun isFavourite(id: Int): Boolean
