@@ -1,6 +1,6 @@
 package com.zrifapps.game.data.datasources.remote
 
-import com.zrifapps.core.response.BaseResponse
+import com.zrifapps.core.data.response.BaseResponse
 import com.zrifapps.game.data.dto.GameDTO
 import retrofit2.http.GET
 import retrofit2.http.Path

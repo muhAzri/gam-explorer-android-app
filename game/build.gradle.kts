@@ -53,7 +53,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.material3)
 
-    // Hilt ViewModel + Compose integration
+    // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
@@ -62,10 +62,6 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 
     //Retrofit
     implementation(libs.retrofit)
@@ -76,4 +72,7 @@ dependencies {
 
     //Module
     implementation(project(":core"))
+
+
+
 }

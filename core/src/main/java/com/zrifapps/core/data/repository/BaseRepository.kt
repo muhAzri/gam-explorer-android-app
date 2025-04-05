@@ -1,4 +1,4 @@
-package com.zrifapps.core.repository
+package com.zrifapps.core.data.repository
 
 import com.zrifapps.core.network.NetworkResult
 import kotlinx.coroutines.Dispatchers

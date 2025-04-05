@@ -77,4 +77,5 @@ dependencies {
     //Module
     implementation(project(":core"))
     implementation(project(":game"))
+    implementation(project(":favourite"))
 }

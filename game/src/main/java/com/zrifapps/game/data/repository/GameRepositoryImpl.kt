@@ -1,7 +1,7 @@
 package com.zrifapps.game.data.repository
 
 import com.zrifapps.core.network.NetworkResult
-import com.zrifapps.core.repository.BaseRepository
+import com.zrifapps.core.data.repository.BaseRepository
 import com.zrifapps.game.common.mapper.toDomain
 import com.zrifapps.game.data.datasources.remote.GameApi
 import com.zrifapps.game.data.request.GetGameRequest

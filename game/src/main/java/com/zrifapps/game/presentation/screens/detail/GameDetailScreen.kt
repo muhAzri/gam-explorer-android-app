@@ -23,19 +23,23 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,57 +50,44 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.zrifapps.game.domain.entity.Game
 import com.zrifapps.game.domain.entity.Genre
-import com.zrifapps.game.domain.entity.Platform
 import com.zrifapps.game.domain.entity.PlatformWrapper
 import com.zrifapps.game.domain.entity.Rating
-import com.zrifapps.game.domain.entity.Store
 import com.zrifapps.game.domain.entity.StoreWrapper
+import com.zrifapps.game.presentation.viewmodels.detail.GameDetailViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameDetailScreen(
     gameId: String,
     onBackPressed: () -> Unit,
+    viewModel: GameDetailViewModel = hiltViewModel(),
 ) {
-    var isFavorite by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    val game = Game(
-        id = 1,
-        name = "The Witcher 3: Wild Hunt",
-        slug = "the-witcher-3-wild-hunt",
-        released = "2015-05-18",
-        backgroundImage = "https://media.rawg.io/media/games/618/618c2031a07bbff6b4f611f10b6bcdbc.jpg",
-        rating = 4.7,
-        ratingTop = 5,
-        ratings = listOf(
-            Rating(1, "Exceptional", 1500, 75.0),
-            Rating(2, "Recommended", 400, 20.0),
-            Rating(3, "Meh", 80, 4.0),
-            Rating(4, "Skip", 20, 1.0)
-        ),
-        platforms = listOf(
-            PlatformWrapper(Platform(1, "PC", "pc")),
-            PlatformWrapper(Platform(2, "PlayStation 4", "playstation4")),
-            PlatformWrapper(Platform(3, "Xbox One", "xbox-one")),
-            PlatformWrapper(Platform(4, "Nintendo Switch", "nintendo-switch"))
-        ),
-        genres = listOf(
-            Genre(1, "RPG", "rpg"), Genre(2, "Action", "action"), Genre(3, "Adventure", "adventure")
-        ),
-        stores = listOf(
-            StoreWrapper(Store(1, "Steam", "steam")),
-            StoreWrapper(Store(2, "GOG", "gog")),
-            StoreWrapper(Store(3, "PlayStation Store", "playstation-store"))
-        )
-    )
+    // Load game details when the screen is first composed
+    LaunchedEffect(gameId) {
+        viewModel.loadGameDetail(gameId)
+    }
+
+    // Show error message if any
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let {
+            snackbarHostState.showSnackbar(message = it)
+        }
+    }
 
     Scaffold(topBar = {
-        TopAppBar(title = { Text(game.name) }, navigationIcon = {
+        TopAppBar(title = {
+            Text(uiState.game?.name ?: "Game Details")
+        }, navigationIcon = {
             IconButton(onClick = onBackPressed) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -104,20 +95,30 @@ fun GameDetailScreen(
                 )
             }
         }, actions = {
-            IconButton(onClick = { isFavorite = !isFavorite }) {
+            IconButton(onClick = { viewModel.toggleFavorite() }) {
                 Icon(
-                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites"
+                    imageVector = if (uiState.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = if (uiState.isFavorite) "Remove from favorites" else "Add to favorites",
+                    tint = if (uiState.isFavorite) Color.Red else LocalContentColor.current
                 )
             }
+
         })
-    }) { paddingValues ->
+    }, snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            GameDetailContent(game = game)
+            if (uiState.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            } else {
+                uiState.game?.let { game ->
+                    GameDetailContent(game = game)
+                }
+            }
         }
     }
 }

@@ -2,8 +2,8 @@ package com.zrifapps.core.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.zrifapps.core.config.ConfigProvider
-import com.zrifapps.core.interceptor.ApiKeyInterceptor
+import com.zrifapps.core.common.manager.ConfigManager
+import com.zrifapps.core.network.interceptor.ApiKeyInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +27,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideLoggingInterceptor(config: ConfigProvider): HttpLoggingInterceptor {
+    fun provideLoggingInterceptor(config: ConfigManager): HttpLoggingInterceptor {
         val loggingInterceptor = if (config.debug) {
             HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         } else {
@@ -38,8 +38,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideApiKeyInterceptor(config: ConfigProvider): ApiKeyInterceptor {
-        return ApiKeyInterceptor(configProvider = config)
+    fun provideApiKeyInterceptor(config: ConfigManager): ApiKeyInterceptor {
+        return ApiKeyInterceptor(configManager = config)
     }
 
     @Provides
@@ -55,7 +55,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRetrofit(
-        config: ConfigProvider,
+        config: ConfigManager,
         moshi: Moshi,
         okHttpClient: OkHttpClient,
     ): Retrofit = Retrofit.Builder()

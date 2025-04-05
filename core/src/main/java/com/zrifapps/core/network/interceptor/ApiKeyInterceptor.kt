@@ -1,17 +1,17 @@
-package com.zrifapps.core.interceptor
+package com.zrifapps.core.network.interceptor
 
-import com.zrifapps.core.config.ConfigProvider
+import com.zrifapps.core.common.manager.ConfigManager
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class ApiKeyInterceptor(private val configProvider: ConfigProvider) : Interceptor {
+class ApiKeyInterceptor(private val configManager: ConfigManager) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
         val originalUrl = originalRequest.url
 
         val newUrl = originalUrl.newBuilder()
-            .addQueryParameter("key", configProvider.apiKey)
+            .addQueryParameter("key", configManager.apiKey)
             .build()
 
         val newRequest = originalRequest.newBuilder()
