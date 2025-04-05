@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.zrifapps.game.presentation.screens.GameListingScreen
+import com.zrifapps.game.presentation.screens.GameListScreen
 
 
 @Composable
@@ -26,9 +26,9 @@ fun AppRouter(
     NavHost(
         navController = navController, startDestination = startDestination, modifier = modifier
     ) {
-        composable<GameList>{
-            GameListingScreen(
-                onGameClicked = {  },
+        composable<GameList> {
+            GameListScreen(
+                onGameClicked = { },
                 onFavoritesClicked = {}
             )
         }

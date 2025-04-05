@@ -3,6 +3,7 @@ package com.zrifapps.core.di
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.zrifapps.core.config.ConfigProvider
+import com.zrifapps.core.interceptor.ApiKeyInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,9 +38,17 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideApiKeyInterceptor(config: ConfigProvider): ApiKeyInterceptor {
+        return ApiKeyInterceptor(configProvider = config)
+    }
+
+    @Provides
+    @Singleton
     fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
+        apiKeyInterceptor: ApiKeyInterceptor,
     ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(apiKeyInterceptor)
         .addInterceptor(loggingInterceptor)
         .build()
 

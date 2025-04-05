@@ -93,18 +93,21 @@ fun GameListTile(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        game.platforms.take(2).forEach { platformWrapper ->
+                        game.platforms?.take(2)?.forEach { platformWrapper ->
                             PlatformChip(platformName = platformWrapper.platform.name)
                         }
 
-                        if (game.platforms.size > 2) {
-                            Text(
-                                text = "+${game.platforms.size - 2}",
-                                style = MaterialTheme.typography.bodySmall,
-                                modifier = Modifier
-                                    .padding(horizontal = 4.dp)
-                            )
+                        game.platforms?.let { platforms ->
+                            if (platforms.size > 2) {
+                                Text(
+                                    text = "+${platforms.size - 2}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    modifier = Modifier
+                                        .padding(horizontal = 4.dp)
+                                )
+                            }
                         }
+
                     }
                 }
             }
