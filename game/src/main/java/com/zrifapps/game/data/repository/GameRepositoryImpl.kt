@@ -25,5 +25,13 @@ class GameRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getGameDetail(gameId: String): NetworkResult<Game> {
+        return safeApiCall {
+            val response = gameApi.gamesDetail(gameId)
+
+            response.toDomain()
+        }
+    }
+
 
 }

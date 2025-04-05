@@ -7,4 +7,6 @@ import com.zrifapps.game.domain.entity.Game
 interface GameRepository {
 
     suspend fun getGame(getGameRequest: GetGameRequest): NetworkResult<List<Game>>
+
+    suspend fun getGameDetail(gameId: String): NetworkResult<Game>
 }
